@@ -1,0 +1,11 @@
+import os
+
+
+
+# CURRENT WORKING DIRECTORY
+CWD = os.getcwd() + '\\'
+
+
+
+# ESPACIO ENTRE COMPONENTES INTERFAZ INICIAL
+ESPACIO_Y = 5

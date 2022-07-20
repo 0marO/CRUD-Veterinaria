@@ -167,10 +167,10 @@ class IngresoMascota(tk.Toplevel):
                 self.IngresarMascota.pack(pady = ESPACIO_Y, anchor= S)
 
 
-        def FuncionMagicaDeBackend(self, nombre, raza, edad, dni_dueño, dni_dueño2, telefono):
+        def FuncionMagicaDeBackend(self, nombre, raza, edad, dni_dueño, dni_dueño2):
                 #esta función será remplazada por otra del backend.
                 #En el caso feliz se encargará de ingresar un nuevo paciente a la base de datos
-                print(nombre, raza, edad, dni_dueño, dni_dueño2, telefono)
+                print(nombre, raza, edad, dni_dueño, dni_dueño2)
 
 
 class EntryCustom(ttk.Frame):

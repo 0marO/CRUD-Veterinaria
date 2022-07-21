@@ -174,17 +174,16 @@ class IngresoMascota(tk.Toplevel):
                 #En el caso feliz se encargará de ingresar un nuevo paciente a la base de datos
                 print(nombre, raza, edad, dni_dueño, dni_dueño2)
 
-
 class BuscarRegistro(tk.Toplevel):
         def __init__(self):
                 super().__init__()
                 # configuración de la ventana 
                 self.title('Logi Vet Búsqueda de registros.')
-                self.geometry('700x700')
+                self.geometry('1130x430')
 
                 # MARCO BUSQUEDA
                 self.CartaBusqueda = ttk.Frame(self, style='Card', padding=(5, 6, 10, 9))
-                self.CartaBusqueda.place(x = ESPACIO_X*2, y = ESPACIO_Y)
+                self.CartaBusqueda.place(x = ESPACIO_X*2, y = ESPACIO_Y*2)
 
                 # SELECCION DE BUSQUEDA
                 self.LabelBuscar = Label(self.CartaBusqueda, text= "Buscar por ")
@@ -206,7 +205,7 @@ class BuscarRegistro(tk.Toplevel):
                 
                 # MARCO DATOS
                 self.card = ttk.Frame(self, style='Card', padding=(5, 6, 100, 9))
-                self.card.place(x = ESPACIO_X*2, y = ESPACIO_Y+MARCO_DE_BUSQUEDA)
+                self.card.place(x = ESPACIO_X*2, y = ESPACIO_Y+MARCO_DE_BUSQUEDA_Y)
 
                 #ENTRY
                 EntryNombre = EntryCustom(self.card, text='Nombre')
@@ -239,8 +238,74 @@ class BuscarRegistro(tk.Toplevel):
                 EntryTelefono2 = EntryCustom(self.card, text='Telefono dueño 2')
                 EntryTelefono2.grid(row= 6, column= 2)
 
+                self.ListaEntry = [EntryNombre,EntryID,EntryRaza,EntryEdad,EntryDniDueño,
+                                   EntryEmailDueño,EntryTelefono,EntryDniDueño2,
+                                   EntryEmailDueño2,EntryTelefono2]
+
+
+                self.LabelFoto = Label(self.card, text="ACA VA LA FOTO", 
+                                        height= 7, width= 15, bg='green')
+                self.LabelFoto.place(x = 200, y = 20)
+
+                
+
+                # MARCO TREE VIEW
+                self.CartaTreeView = ttk.Frame(self, padding=(5, 6, 10, 9))
+                self.CartaTreeView.place(x = ANCHO_MARCO_DATOS, y = ESPACIO_Y + OCD)
+                # Scrollbar TREE
+                treeScroll = ttk.Scrollbar(self.CartaTreeView)
+                treeScroll.pack(side="right", fill="y")
+                # Treeview
+                self.treeview = ttk.Treeview(self.CartaTreeView, selectmode="extended",
+                                             yscrollcommand=treeScroll.set,
+                                             columns=(1,2,3),
+                                             height=13)
+                self.treeview.pack(expand=True, fill="both")
+                treeScroll.config(command=self.treeview.yview)
+
+                # Treeview columns
+                self.treeview.column("#0", width= 100)
+                self.treeview.column(1, anchor="w", width=120)
+                self.treeview.column(2, anchor="w", width=120)
+                self.treeview.column(3, anchor="w", width=120)
+
+                # Treeview headings
+                self.treeview.heading("#0", text="Id Paciente", anchor="center")
+                self.treeview.heading(1, text="Paciente", anchor="center")
+                self.treeview.heading(2, text="Dueño", anchor="center")
+                self.treeview.heading(3, text="Dni Dueño", anchor="center")
+
+
+
+                #BOTONES  MODIFICAR, HC Y ELIMINAR PACIENTE
+                self.BtMod = Button(self, text='Modificar Datos', bg='yellow',
+                                    command= lambda: self.EstadoNormalEntry())
+
+                self.BtMod.place(x= ESPACIO_X*2, y= MARCO_DE_DATOS_Y)
+
+                self.BtHc = Button(self, text='Historia Clínica', bg='dark turquoise')
+                self.BtHc.place(x= ESPACIO_X*2+BOTON_MOD_X, y= MARCO_DE_DATOS_Y)
+
+                self.BtEl = Button(self, text='Eliminar Paciente', bg='tomato')
+                self.BtEl.place(x= ESPACIO_X*2+BOTON_MOD_X*4, y= MARCO_DE_DATOS_Y)
+
+
+                # Configuracion estandar inicial de los campos de datos
+                self.SoloLeerEntry()
+
         def buscar_magicamente(self):
                 pass
+        
+        def SoloLeerEntry(self):
+                for entry in self.ListaEntry:
+                        entry.Entrada.config(state = 'readonly')
+                self.BtMod.config(command= lambda: self.EstadoNormalEntry(), text='Modificar Datos')
+
+        def EstadoNormalEntry(self):
+                for entry in self.ListaEntry:
+                        entry.Entrada.config(state = 'normal')
+                self.BtMod.config(command= lambda: self.SoloLeerEntry(), text='Terminar Mods')
+
 
 
 class EntryCustom(ttk.Frame):
@@ -251,11 +316,11 @@ class EntryCustom(ttk.Frame):
                 self.frame.grid()
 
                 self.VarTexto = tk.StringVar()
-                self.EntradaID = ttk.Entry(self.frame, textvariable = self.VarTexto)
-                self.EntradaID.pack(pady = ESPACIO_Y)
+                self.Entrada = ttk.Entry(self.frame, textvariable = self.VarTexto)
+                self.Entrada.pack(pady = ESPACIO_Y)
                 self.VarTexto.set(text)
-                self.EntradaID.bind('<Button-1>', lambda e: self.borrar_texto(e, text))
-                self.EntradaID.bind('<FocusOut>', lambda e: self.restaurar_texto(e, text))
+                self.Entrada.bind('<Button-1>', lambda e: self.borrar_texto(e, text))
+                self.Entrada.bind('<FocusOut>', lambda e: self.restaurar_texto(e, text))
 
         def borrar_texto(self, e, text):
                 if self.VarTexto.get() == text:

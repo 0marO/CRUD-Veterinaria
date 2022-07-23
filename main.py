@@ -4,7 +4,7 @@ from tkinter import *
 from tkinter import ttk
 
 from constantes import *
-
+from backend.backend import *
 
 class App(tk.Tk):
 
@@ -108,12 +108,12 @@ class IngresoDueño(tk.Toplevel):
                 self.IngresarMascota = ttk.Button(self.card,
                                                 text='Confirmar Datos',  
                                                 style='Accent.TButton',
-                                                command= lambda: self.FuncionMagicaDeBackend(EntryNombre.EntradaID.get(),
-                                                                                             EntryApellido.EntradaID.get(),
-                                                                                             EntryEmail.EntradaID.get(),
-                                                                                             EntryDNI.EntradaID.get(),
-                                                                                             EntryDirección.EntradaID.get(),
-                                                                                             EntryTelefono.EntradaID.get()
+                                                command= lambda: self.FuncionMagicaDeBackend(EntryNombre.Entrada.get(),
+                                                                                             EntryApellido.Entrada.get(),
+                                                                                             EntryEmail.Entrada.get(),
+                                                                                             EntryDNI.Entrada.get(),
+                                                                                             EntryDirección.Entrada.get(),
+                                                                                             EntryTelefono.Entrada.get()
                                                                                              )
                                                 )
                 self.IngresarMascota.pack(pady = ESPACIO_Y, anchor= S)
@@ -122,7 +122,7 @@ class IngresoDueño(tk.Toplevel):
         def FuncionMagicaDeBackend(self, nombre, apellido, email, dni, direccion, telefono):
                 #esta función será remplazada por otra del backend.
                 #En el caso feliz se encargará de ingresar un nuevo propietario a la base de datos
-                print(nombre, apellido, email, dni, direccion, telefono)
+                IngresarDueñoDB(nombre, apellido, email, dni, direccion, telefono)
 
 class IngresoMascota(tk.Toplevel):
 
@@ -160,11 +160,11 @@ class IngresoMascota(tk.Toplevel):
                 self.IngresarMascota = ttk.Button(self.card,
                                                 text='Confirmar Datos',  
                                                 style='Accent.TButton',
-                                                command= lambda: self.FuncionMagicaDeBackend(EntryNombre.EntradaID.get(),
-                                                                                             EntryRaza.EntradaID.get(),
-                                                                                             EntryEdad.EntradaID.get(),
-                                                                                             EntryDniDueño.EntradaID.get(),
-                                                                                             EntryDniDueño2.EntradaID.get(),
+                                                command= lambda: self.FuncionMagicaDeBackend(EntryNombre.Entrada.get(),
+                                                                                             EntryRaza.Entrada.get(),
+                                                                                             EntryEdad.Entrada.get(),
+                                                                                             EntryDniDueño.Entrada.get(),
+                                                                                             EntryDniDueño2.Entrada.get(),
                                                                                              )
                                                 )
                 self.IngresarMascota.pack(pady = ESPACIO_Y, anchor= S)
@@ -305,7 +305,6 @@ class BuscarRegistro(tk.Toplevel):
                 for entry in self.ListaEntry:
                         entry.Entrada.config(state = 'normal')
                 self.BtMod.config(command= lambda: self.SoloLeerEntry(), text='Terminar Mods')
-
 
 
 class EntryCustom(ttk.Frame):

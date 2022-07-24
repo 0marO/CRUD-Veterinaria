@@ -161,6 +161,7 @@ class IngresoMascota(tk.Toplevel):
                                                 text='Confirmar Datos',  
                                                 style='Accent.TButton',
                                                 command= lambda: self.FuncionMagicaDeBackend(EntryNombre.Entrada.get(),
+                                                                                             ComboBoxTipoAnimal.get(),
                                                                                              EntryRaza.Entrada.get(),
                                                                                              EntryEdad.Entrada.get(),
                                                                                              EntryDniDueño.Entrada.get(),
@@ -169,10 +170,13 @@ class IngresoMascota(tk.Toplevel):
                                                 )
                 self.IngresarMascota.pack(pady = ESPACIO_Y, anchor= S)
 
-        def FuncionMagicaDeBackend(self, nombre, raza, edad, dni_dueño, dni_dueño2):
+        def FuncionMagicaDeBackend(self, nombre, tipo, raza, edad, dni_dueño, dni_dueño2):
                 #esta función será remplazada por otra del backend.
                 #En el caso feliz se encargará de ingresar un nuevo paciente a la base de datos
-                print(nombre, raza, edad, dni_dueño, dni_dueño2)
+                print(nombre, tipo, raza, edad, dni_dueño, dni_dueño2)
+                
+
+                #ngresarMascotaDB(nombre, tipo, raza, edad, dni_dueño, dni_dueño2)
 
 class BuscarRegistro(tk.Toplevel):
         def __init__(self):
@@ -195,8 +199,8 @@ class BuscarRegistro(tk.Toplevel):
                 ComboBuscarPor.current(0)
                 ComboBuscarPor.grid(row= 0, column= 1)
 
-                EntryNombre = EntryCustom(self.CartaBusqueda, text='')
-                EntryNombre.grid(row= 0, column= 2, padx= 10)
+                self.EntryBuscar = EntryCustom(self.CartaBusqueda, text='')
+                self.EntryBuscar.grid(row= 0, column= 2, padx= 10)
 
                 self.BtBuscar = Button(self.CartaBusqueda, text ='--->',
                                         command= self.buscar_magicamente,
@@ -208,39 +212,39 @@ class BuscarRegistro(tk.Toplevel):
                 self.card.place(x = ESPACIO_X*2, y = ESPACIO_Y+MARCO_DE_BUSQUEDA_Y)
 
                 #ENTRY
-                EntryNombre = EntryCustom(self.card, text='Nombre')
-                EntryNombre.grid(row= 1, column= 0)
+                self.EntryNombre = EntryCustom(self.card, text='Nombre')
+                self.EntryNombre.grid(row= 1, column= 0)
 
-                EntryID = EntryCustom(self.card, text='ID mascota')
-                EntryID.grid(row= 2, column= 0)
+                self.EntryID = EntryCustom(self.card, text='ID mascota')
+                self.EntryID.grid(row= 2, column= 0)
 
-                EntryRaza = EntryCustom(self.card, text='Raza')
-                EntryRaza.grid(row= 3, column= 0)
+                self.EntryRaza = EntryCustom(self.card, text='Raza')
+                self.EntryRaza.grid(row= 3, column= 0)
 
-                EntryEdad = EntryCustom(self.card, text='Edad')
-                EntryEdad.grid(row= 4, column= 0)
+                self.EntryEdad = EntryCustom(self.card, text='Edad')
+                self.EntryEdad.grid(row= 4, column= 0)
 
-                EntryDniDueño = EntryCustom(self.card, text='DNI Dueño')
-                EntryDniDueño.grid(row= 5, column= 0)
+                self.EntryDniDueño = EntryCustom(self.card, text='DNI Dueño')
+                self.EntryDniDueño.grid(row= 5, column= 0)
 
-                EntryEmailDueño = EntryCustom(self.card, text='dueño@ejemplo.com')
-                EntryEmailDueño.grid(row= 5, column= 1, padx= 10)
+                self.EntryEmailDueño = EntryCustom(self.card, text='dueño@ejemplo.com')
+                self.EntryEmailDueño.grid(row= 5, column= 1, padx= 10)
 
-                EntryTelefono = EntryCustom(self.card, text='Telefono')
-                EntryTelefono.grid(row= 5, column= 2)
+                self.EntryTelefono = EntryCustom(self.card, text='Telefono')
+                self.EntryTelefono.grid(row= 5, column= 2)
 
-                EntryDniDueño2 = EntryCustom(self.card, text='DNI segundo Dueño')
-                EntryDniDueño2.grid(row= 6, column= 0)
+                self.EntryDniDueño2 = EntryCustom(self.card, text='DNI segundo Dueño')
+                self.EntryDniDueño2.grid(row= 6, column= 0)
 
-                EntryEmailDueño2 = EntryCustom(self.card, text='dueño2@ejemplo.com')
-                EntryEmailDueño2.grid(row= 6, column= 1, padx= 10)
+                self.EntryEmailDueño2 = EntryCustom(self.card, text='dueño2@ejemplo.com')
+                self.EntryEmailDueño2.grid(row= 6, column= 1, padx= 10)
 
-                EntryTelefono2 = EntryCustom(self.card, text='Telefono dueño 2')
-                EntryTelefono2.grid(row= 6, column= 2)
+                self.EntryTelefono2 = EntryCustom(self.card, text='Telefono dueño 2')
+                self.EntryTelefono2.grid(row= 6, column= 2)
 
-                self.ListaEntry = [EntryNombre,EntryID,EntryRaza,EntryEdad,EntryDniDueño,
-                                   EntryEmailDueño,EntryTelefono,EntryDniDueño2,
-                                   EntryEmailDueño2,EntryTelefono2]
+                self.ListaEntry = [self.EntryNombre,self.EntryID,self.EntryRaza,self.EntryEdad,self.EntryDniDueño,
+                                   self.EntryEmailDueño,self.EntryTelefono,self.EntryDniDueño2,
+                                   self.EntryEmailDueño2,self.EntryTelefono2]
 
 
                 self.LabelFoto = Label(self.card, text="ACA VA LA FOTO", 
@@ -294,6 +298,7 @@ class BuscarRegistro(tk.Toplevel):
                 self.SoloLeerEntry()
 
         def buscar_magicamente(self):
+                BuscarRegistroPorIdMascota(self.EntryBuscar.Entrada.get())
                 pass
         
         def SoloLeerEntry(self):

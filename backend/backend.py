@@ -1,3 +1,4 @@
+from unittest import result
 import mysql.connector
 
 def ConectarConDb():
@@ -19,7 +20,7 @@ def IngresarDueñoDB(nombre, apellido, email, dni, direccion, telefono):
         mycursor = mydb.cursor()
 
         mycursor.execute("""CREATE TABLE IF NOT EXISTS duenio 
-                            (id_duenio,
+                            (id_duenio int NOT NULL AUTO_INCREMENT,
                             Nombre varchar(50),
                             Apellido varchar(50),
                             Email varchar(50),
@@ -30,7 +31,15 @@ def IngresarDueñoDB(nombre, apellido, email, dni, direccion, telefono):
                             );
                         """)
 
-        mycursor.execute(f"""INSERT INTO duenio 
+        # TEMPORAL
+        mycursor.execute("SHOW TABLES")
+        myresult = mycursor.fetchall()
+        for x in myresult:
+                print(x)
+        # ----------------------------
+
+
+        mycursor.execute(f"""INSERT INTO duenio(Nombre, Apellido, Email, DNI, Direccion, Telefono)
                             VALUES ('{nombre}',
                                     '{apellido}',
                                     '{email}',
@@ -40,38 +49,80 @@ def IngresarDueñoDB(nombre, apellido, email, dni, direccion, telefono):
                         """)
         
         mydb.commit()
+
+        # TEMPORAL
+        mycursor.execute("SELECT * FROM duenio")
+        myresult = mycursor.fetchall()
+        for x in myresult:
+                print(x)
+        # ----------------------------
+
         mydb.close()
 
 
-def IngresarMascotaDB(nombre, tipo, raza, edad, id_duenio, id_duenio2):
+def IngresarMascotaDB(nombre, tipo, raza, edad, dni_dueño, dni_dueño2 = ''):
 
         mydb = ConectarConDb()
         mycursor = mydb.cursor()
 
-        mycursor.execute("""CREATE TABLE IF NOT EXISTS paciente (id_mascota NOT NULL AUTO_INCREMENT,
+        mycursor.execute("""CREATE TABLE IF NOT EXISTS paciente (id_mascota int NOT NULL AUTO_INCREMENT,
                                                                  Nombre varchar(50) NOT NULL,
                                                                  Tipo varchar(50) NOT NULL,
                                                                  Raza varchar(50) NOT NULL,
                                                                  Edad int NOT NULL,
                                                                  id_duenio int NOT NULL,
-                                                                 id_duenio2 ints,
+                                                                 id_duenio2 int,
                                                                  PRIMARY KEY (id_mascota),
-                                                                 FOREIGN KEY (id_duenio) REFERENCES Persons(id_duenio),
-                                                                 FOREIGN KEY (id_duenio2) REFERENCES Persons(id_duenio2)
+                                                                 FOREIGN KEY (id_duenio) REFERENCES duenio(id_duenio),
+                                                                 FOREIGN KEY (id_duenio2) REFERENCES duenio(id_duenio)
                                                                 );
                         """)
 
-        mycursor.execute(f"""INSERT INTO paciente 
-                            VALUES ('{nombre}',
-                                    '{tipo}',
-                                    '{raza}',
-                                     {edad},
-                                     {id_duenio},
-                                     {id_duenio2},
-                                    );
-                        """)
-        
-        mydb.commit()
+        # TEMPORAL
+        mycursor.execute("SHOW TABLES")
+        myresult = mycursor.fetchall()
+        for x in myresult:
+                print(x)
+        # ----------------------------
+
+        # TEMPORAL
+        mycursor.execute("SELECT * FROM duenio")
+        myresult = mycursor.fetchall()
+        for x in myresult:
+                print(x)
+        # ----------------------------
+
+        if dni_dueño2 != '':
+                mycursor.execute(f"""INSERT INTO paciente(Nombre, Tipo,Raza,Edad,id_duenio,id_duenio2)
+                                VALUES ('{nombre}',
+                                        '{tipo}',
+                                        '{raza}',
+                                         {edad},
+                                        (SELECT id_duenio FROM duenio WHERE DNI = {dni_dueño} LIMIT 1),
+                                        (SELECT id_duenio FROM duenio WHERE DNI = {dni_dueño2} LIMIT 1));
+                                """)
+                
+                mydb.commit()
+        else:
+                mycursor.execute(f"""INSERT INTO paciente(Nombre, Tipo,Raza,Edad,id_duenio)
+                                VALUES ('{nombre}',
+                                        '{tipo}',
+                                        '{raza}',
+                                         {edad},
+                                        (SELECT id_duenio FROM duenio WHERE DNI = {dni_dueño} LIMIT 1));
+                                """)
+                
+                mydb.commit()
+
+
+        print('\nAHORA TODO DE PACIENTES:\n')
+        # TEMPORAL
+        mycursor.execute("SELECT * FROM paciente")
+        myresult = mycursor.fetchall()
+        for x in myresult:
+                print(x)
+        # ----------------------------
+
         mydb.close()
 
 
@@ -80,10 +131,21 @@ def BuscarRegistroPorIdMascota(IdMascota):
         mydb = ConectarConDb()
         mycursor = mydb.cursor()
 
-        mycursor.execute(f"""SELECT * FROM paciente WHERE id_mascota == {IdMascota}""")
+        mycursor.execute(f"""   SELECT  p.Nombre, p.id_mascota, p.Raza, p.Edad, 
+                                        d.Nombre, d.DNI, d.Email, d.Telefono,            -- Dueño 1
+                                        d2.Nombre, d2.DNI, d2.Email, d2.Telefono         -- Dueño 2
+                                FROM paciente AS p
+                                        INNER JOIN duenio AS d
+                                                ON p.id_duenio = d.id_duenio
+                                        LEFT JOIN duenio AS d2
+                                                ON p.id_duenio2 = d2.id_duenio
+                                WHERE p.id_mascota = {IdMascota};""")
 
         myresult = mycursor.fetchall()
         mydb.close()
+
+        for x in myresult:
+                print(x)
 
         return myresult
 

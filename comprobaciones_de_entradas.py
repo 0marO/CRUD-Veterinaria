@@ -94,3 +94,15 @@ print(ComprobarEntradaEmail('123@'))
 print(ComprobarEntradaEmail('123@asdfasdfasdfasdfasdfadfaadsfasdfasdfasd.com'))
 print(ComprobarEntradaEmail('1@ejemplo.com'))
 """
+
+
+def ComprobarEntradaEdad(StringEdad):
+        return (StringEdad == 'Edad' or len(StringEdad) < 30)
+
+"""
+print(ComprobarEntradaEdad('10 años asdfasdfasdfasdfadsfasdfadsfasdfasdfasdfasdf'))
+print(ComprobarEntradaEdad('10 meses'))
+print(ComprobarEntradaEdad('10 días'))
+print(ComprobarEntradaEdad('10 años'))
+"""
+

@@ -5,6 +5,7 @@ from tkinter import ttk
 
 from constantes import *
 from backend.backend import *
+from comprobaciones_de_entradas import *
 
 class App(tk.Tk):
 
@@ -87,23 +88,30 @@ class IngresoDueño(tk.Toplevel):
                 self.card.pack(pady = ESPACIO_Y)
 
                 #ENTRY
+                fila = 0
                 EntryNombre = EntryCustom(self.card, text='Nombre')
-                EntryNombre.pack(anchor = W, pady = ESPACIO_Y)
+                EntryNombre.grid(row= fila, column= 0,sticky= W)
+                fila += 1
 
                 EntryApellido = EntryCustom(self.card, text='Apellido')
-                EntryApellido.pack(anchor = W, pady = ESPACIO_Y)
+                EntryApellido.grid(row= fila, column= 0,sticky= W)
+                fila += 1
 
                 EntryEmail = EntryCustom(self.card, text='Email')
-                EntryEmail.pack(anchor = W, pady = ESPACIO_Y)
+                EntryEmail.grid(row= fila, column= 0,sticky= W)
+                fila += 1
 
                 EntryDNI = EntryCustom(self.card, text='DNI')
-                EntryDNI.pack(anchor = W, pady = ESPACIO_Y)
+                EntryDNI.grid(row= fila, column= 0,sticky= W)
+                fila += 1
 
                 EntryDirección = EntryCustom(self.card, text='Dirección')
-                EntryDirección.pack(anchor = W, pady = ESPACIO_Y)
+                EntryDirección.grid(row= fila, column= 0,sticky= W)
+                fila += 1
 
                 EntryTelefono = EntryCustom(self.card, text='Teléfono')
-                EntryTelefono.pack(anchor = W, pady = ESPACIO_Y)
+                EntryTelefono.grid(row= fila, column= 0,sticky= W)
+                fila += 1
 
                 self.IngresarMascota = ttk.Button(self.card,
                                                 text='Confirmar Datos',  
@@ -116,12 +124,42 @@ class IngresoDueño(tk.Toplevel):
                                                                                              EntryTelefono.Entrada.get()
                                                                                              )
                                                 )
-                self.IngresarMascota.pack(pady = ESPACIO_Y, anchor= S)
+                self.IngresarMascota.grid(row= fila, column= 0,sticky= W)
+                fila += 1
+
+
+                self.Cruz = PhotoImage(file= CWD +'imagenes\\cruz_chica.png')
+                self.LabelCruz = Label(self.card, image = self.Cruz)
 
 
         def FuncionMagicaDeBackend(self, nombre, apellido, email, dni, direccion, telefono):
-                #esta función será remplazada por otra del backend.
-                #En el caso feliz se encargará de ingresar un nuevo propietario a la base de datos
+
+                if ComprobarEntradaNombre(nombre) == False:
+                        print('Error. El nombre ingresado es inválido.')
+                        self.LabelCruz.forget()
+                        self.LabelCruz.grid(row= 0, column= 1)
+                        return
+                if ComprobarEntradaNombre(apellido) == False:
+                        print('Error. El apellido ingresado es inválido.')
+                        self.LabelCruz.forget()
+                        self.LabelCruz.grid(row= 1, column= 1)
+                        return
+                if ComprobarEntradaEmail(email) == False:
+                        print('Error. El email ingresado es inválido.')
+                        self.LabelCruz.forget()
+                        self.LabelCruz.grid(row= 2, column= 1)
+                        return
+                if ComprobarEntradaDni(dni) == False:
+                        print('Error. El DNI ingresado es inválido.')
+                        self.LabelCruz.forget()
+                        self.LabelCruz.grid(row= 3, column= 1)
+                        return
+                if ComprobarEntradaTelefono(telefono) == False:
+                        print('Error. El Telefono ingresado es inválido.')
+                        self.LabelCruz.forget()
+                        self.LabelCruz.grid(row= 5, column= 1)
+                        return
+
                 IngresarDueñoDB(nombre, apellido, email, dni, direccion, telefono)
 
 class IngresoMascota(tk.Toplevel):
@@ -137,25 +175,26 @@ class IngresoMascota(tk.Toplevel):
                 self.card.pack(pady = ESPACIO_Y)
                 #ENTRY
                 EntryNombre = EntryCustom(self.card, text='Nombre')
-                EntryNombre.pack(anchor = W, pady = ESPACIO_Y)
+                EntryNombre.grid(row= 0, column= 0,sticky= W)
 
-                ComboBoxTipoAnimal = ttk.Combobox(self.card, values = ["Canino",'Felino','Equino'
+                ComboBoxTipoAnimal = ttk.Combobox(self.card, values = ["Canino",'Felino','Equino',
                                                                        'Rumiante','Roedor','Ave',
                                                                        'Reptil', 'Otro'
                                                                        ])
-                ComboBoxTipoAnimal.pack(anchor = W, pady = ESPACIO_Y)
+                ComboBoxTipoAnimal.grid(row= 1, column= 0)
 
                 EntryRaza = EntryCustom(self.card, text='Raza')
-                EntryRaza.pack(anchor = W, pady = ESPACIO_Y)
+                EntryRaza.grid(row= 2, column= 0,sticky= W)
 
                 EntryEdad = EntryCustom(self.card, text='Edad')
-                EntryEdad.pack(anchor = W, pady = ESPACIO_Y)
+                EntryEdad.grid(row= 3, column= 0,sticky= W)
 
                 EntryDniDueño = EntryCustom(self.card, text='DNI Dueño')
-                EntryDniDueño.pack(anchor = W, pady = ESPACIO_Y)
+                EntryDniDueño.grid(row= 4, column= 0,sticky= W)
 
                 EntryDniDueño2 = EntryCustom(self.card, text='DNI segundo Dueño')
-                EntryDniDueño2.pack(anchor = W, pady = ESPACIO_Y)
+                EntryDniDueño2.grid(row= 5, column= 0,sticky= W)
+                
 
                 self.IngresarMascota = ttk.Button(self.card,
                                                 text='Confirmar Datos',  
@@ -168,15 +207,46 @@ class IngresoMascota(tk.Toplevel):
                                                                                              EntryDniDueño2.Entrada.get(),
                                                                                              )
                                                 )
-                self.IngresarMascota.pack(pady = ESPACIO_Y, anchor= S)
+                self.IngresarMascota.grid(row= 6, column= 0, pady= 5,sticky= W)
+
+                
+                self.Cruz = PhotoImage(file= CWD +'imagenes\\cruz_chica.png')
+                self.LabelCruz = Label(self.card, image = self.Cruz)
 
         def FuncionMagicaDeBackend(self, nombre, tipo, raza, edad, dni_dueño, dni_dueño2):
                 #esta función será remplazada por otra del backend.
                 #En el caso feliz se encargará de ingresar un nuevo paciente a la base de datos
-                print(nombre, tipo, raza, edad, dni_dueño, dni_dueño2)
-                
+                if ComprobarEntradaNombre(nombre) == False:
+                        print('Error. El nombre ingresado es inválido.')
+                        self.LabelCruz.forget()
+                        self.LabelCruz.grid(row= 0, column= 1)
+                        return
+                if ComprobarEntradaNombre(raza) == False:
+                        print('Error. El nombre ingresado es inválido.')
+                        self.LabelCruz.forget()
+                        self.LabelCruz.grid(row= 2, column= 1)
+                        return
+                if ComprobarEntradaEdad(edad) == False:
+                        print('Error. Edad acepta solo numeros.')
+                        self.LabelCruz.forget()
+                        self.LabelCruz.grid(row= 3, column= 1)
+                        return
+                if ComprobarEntradaDni(dni_dueño) == False:
+                        print('Error. El DNI ingresado es inválido.')
+                        self.LabelCruz.forget()
+                        self.LabelCruz.grid(row= 4, column= 1)
+                        return
+                if ComprobarEntradaDni(dni_dueño2) == False and (dni_dueño2 != '' and dni_dueño2 != 'DNI segundo Dueño'):
+                        print('Error. El DNI ingresado es inválido.')
+                        self.LabelCruz.forget()
+                        self.LabelCruz.grid(row= 5, column= 1)
+                        return
 
-                #ngresarMascotaDB(nombre, tipo, raza, edad, dni_dueño, dni_dueño2)
+                if dni_dueño2 == '' or dni_dueño2 == 'DNI segundo Dueño':
+                        IngresarMascotaDB(nombre, tipo, raza, edad, dni_dueño)
+                else:
+                        IngresarMascotaDB(nombre, tipo, raza, edad, dni_dueño, dni_dueño2)
+
 
 class BuscarRegistro(tk.Toplevel):
         def __init__(self):
@@ -337,5 +407,4 @@ class EntryCustom(ttk.Frame):
 
 if __name__ == "__main__":
         app = App()
-
         app.mainloop()

@@ -154,22 +154,44 @@ def BuscarRegistroPorDniDueño(DniDueño):
         mydb = ConectarConDb()
         cursor = mydb.cursor()
 
-        cursor.execute(f"""SELECT * FROM paciente WHERE DniDuenio == {DniDueño} OR DniDuenio2 == {DniDueño}""")
+        cursor.execute(f"""   SELECT  p.Nombre, p.id_mascota, p.Raza, p.Edad, 
+                                        d.Nombre, d.DNI, d.Email, d.Telefono,            -- Dueño 1
+                                        d2.Nombre, d2.DNI, d2.Email, d2.Telefono         -- Dueño 2
+                                FROM paciente AS p
+                                        INNER JOIN duenio AS d
+                                                ON p.id_duenio = d.id_duenio
+                                        LEFT JOIN duenio AS d2
+                                                ON p.id_duenio2 = d2.id_duenio
+                                WHERE d.DNI = {DniDueño};""")
 
-        resultado =  cursor.fetchall()
+        myresult = cursor.fetchall()
+        for x in myresult:
+                print(x)
+
         mydb.close()
-
-        return resultado
+        return myresult
 
 def BuscarRegistroPorNombreDueño(NombreDueño):
 
         mydb = ConectarConDb()
         cursor = mydb.cursor()
 
-        cursor.execute(f"""SELECT * FROM paciente 
-                           WHERE nombreDuenio LIKE '%{NombreDueño}%' OR nombreDuenio2 LIKE '%{NombreDueño}%' """)
+        cursor.execute(f"""   SELECT  p.Nombre, p.id_mascota, p.Raza, p.Edad, 
+                                        d.Nombre, d.DNI, d.Email, d.Telefono,            -- Dueño 1
+                                        d2.Nombre, d2.DNI, d2.Email, d2.Telefono         -- Dueño 2
+                                FROM paciente AS p
+                                        INNER JOIN duenio AS d
+                                                ON p.id_duenio = d.id_duenio
+                                        LEFT JOIN duenio AS d2
+                                                ON p.id_duenio2 = d2.id_duenio
+                                WHERE d.Nombre LIKE '%{NombreDueño}%' OR d2.Nombre LIKE '%{NombreDueño}%' """)
 
         resultado =  cursor.fetchall()
+
+        for x in resultado:
+                print(x)
+
+
         mydb.close()
 
         return resultado
@@ -179,10 +201,23 @@ def BuscarRegistroPorNombrePaciente(NombrePaciente):
         mydb = ConectarConDb()
         cursor = mydb.cursor()
 
-        cursor.execute(f"""SELECT * FROM paciente 
-                           WHERE Nombre LIKE '%{NombrePaciente}%' OR Nombre LIKE '%{NombrePaciente}%' """)
+        cursor.execute(f"""   SELECT  p.Nombre, p.id_mascota, p.Raza, p.Edad, 
+                                        d.Nombre, d.DNI, d.Email, d.Telefono,            -- Dueño 1
+                                        d2.Nombre, d2.DNI, d2.Email, d2.Telefono         -- Dueño 2
+                                FROM paciente AS p
+                                        INNER JOIN duenio AS d
+                                                ON p.id_duenio = d.id_duenio
+                                        LEFT JOIN duenio AS d2
+                                                ON p.id_duenio2 = d2.id_duenio
+                                WHERE p.Nombre LIKE '%{NombrePaciente}%'  """)
 
         resultado =  cursor.fetchall()
+
+        for x in resultado:
+                print(x)
+
+
+
         mydb.close()
 
         return resultado

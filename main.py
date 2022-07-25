@@ -1,4 +1,6 @@
 
+from asyncio.windows_events import NULL
+from contextlib import nullcontext
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
@@ -160,6 +162,7 @@ class IngresoDueño(tk.Toplevel):
                         self.LabelCruz.grid(row= 5, column= 1)
                         return
 
+                self.LabelCruz.forget()
                 IngresarDueñoDB(nombre, apellido, email, dni, direccion, telefono)
 
 class IngresoMascota(tk.Toplevel):
@@ -242,6 +245,7 @@ class IngresoMascota(tk.Toplevel):
                         self.LabelCruz.grid(row= 5, column= 1)
                         return
 
+                self.LabelCruz.forget()
                 if dni_dueño2 == '' or dni_dueño2 == 'DNI segundo Dueño':
                         IngresarMascotaDB(nombre, tipo, raza, edad, dni_dueño)
                 else:
@@ -263,17 +267,18 @@ class BuscarRegistro(tk.Toplevel):
                 self.LabelBuscar = Label(self.CartaBusqueda, text= "Buscar por ")
                 self.LabelBuscar.grid(row= 0, column= 0)
 
-                ComboBuscarPor = ttk.Combobox(self.CartaBusqueda, values = ["ID Mascota",'Nombre Dueño',
+                self.ComboBuscarPor = ttk.Combobox(self.CartaBusqueda, values = ["ID Mascota",'Nombre Dueño',
                                                                        'DNI dueño','Nombre Paciente',],
                                                state="readonly")
-                ComboBuscarPor.current(0)
-                ComboBuscarPor.grid(row= 0, column= 1)
+                self.ComboBuscarPor.current(0)
+                self.ComboBuscarPor.grid(row= 0, column= 1)
 
                 self.EntryBuscar = EntryCustom(self.CartaBusqueda, text='')
                 self.EntryBuscar.grid(row= 0, column= 2, padx= 10)
 
+                ListaRegistrosBuscados = []
                 self.BtBuscar = Button(self.CartaBusqueda, text ='--->',
-                                        command= self.buscar_magicamente,
+                                        command= lambda: self.buscar_magicamente(ListaRegistrosBuscados),
                                         borderwidth = 0)
                 self.BtBuscar.grid(row = 0, column = 3, padx= 10)
                 
@@ -344,11 +349,24 @@ class BuscarRegistro(tk.Toplevel):
                 self.treeview.column(3, anchor="w", width=120)
 
                 # Treeview headings
-                self.treeview.heading("#0", text="Id Paciente", anchor="center")
-                self.treeview.heading(1, text="Paciente", anchor="center")
-                self.treeview.heading(2, text="Dueño", anchor="center")
-                self.treeview.heading(3, text="Dni Dueño", anchor="center")
+                self.treeview.heading("#0", text="Id Paciente", anchor="w")
+                self.treeview.heading(1, text="Paciente", anchor="w")
+                self.treeview.heading(2, text="Dueño", anchor="w")
+                self.treeview.heading(3, text="Dni Dueño", anchor="w")
+                
+                
+                """  TAL VEZ LO PONGO MAS ADELANTE, TAL VEZ NO JAJA
+                self.treeview.heading(4, text="Raza", anchor="w")
+                self.treeview.heading(5, text="Edad", anchor="w")
+                self.treeview.heading(6, text="Mail", anchor="w")
+                self.treeview.heading(7, text="Telefono", anchor="w")
+                self.treeview.heading(8, text="Dueño 2", anchor="w")
+                self.treeview.heading(9, text="Dni Dueño 2", anchor="w")
+                self.treeview.heading(10, text="Mail 2", anchor="w")
+                self.treeview.heading(11, text="Telefono 2", anchor="w")
 
+                self.treeview['displaycolumns'] = (1, 2, 3)
+                """
 
 
                 #BOTONES  MODIFICAR, HC Y ELIMINAR PACIENTE
@@ -367,10 +385,36 @@ class BuscarRegistro(tk.Toplevel):
                 # Configuracion estandar inicial de los campos de datos
                 self.SoloLeerEntry()
 
-        def buscar_magicamente(self):
-                BuscarRegistroPorIdMascota(self.EntryBuscar.Entrada.get())
-                pass
+        def buscar_magicamente(self,ListaRegistrosBuscados):
+
+                devolucion = NULL
+                if self.ComboBuscarPor.current() == 0:
+                        devolucion = BuscarRegistroPorIdMascota(self.EntryBuscar.Entrada.get())
+                elif self.ComboBuscarPor.current() == 1:
+                        devolucion = BuscarRegistroPorNombreDueño(self.EntryBuscar.Entrada.get())
+                elif self.ComboBuscarPor.current() == 2:
+                        devolucion = BuscarRegistroPorDniDueño(self.EntryBuscar.Entrada.get())
+                elif self.ComboBuscarPor.current() == 3:
+                        devolucion = BuscarRegistroPorNombrePaciente(self.EntryBuscar.Entrada.get())
         
+                ListaRegistrosBuscados.clear()
+                for i in self.treeview.get_children():
+                        self.treeview.delete(i)
+
+                for reg in devolucion:
+                        self.treeview.insert(   "",
+                                                tk.END,
+                                                text= f"{reg[POS_ID_MASCOTA]}",
+                                                values=(f"{reg[POS_NOMBRE_MASCOTA]}",
+                                                        f"{reg[POS_NOMBRE_DUEÑO]}", f"{reg[POS_DNI_DUEÑO]}")
+                                                )
+                        ListaRegistrosBuscados.append(reg)
+
+                print(ListaRegistrosBuscados)
+                self.treeview.update()
+
+
+
         def SoloLeerEntry(self):
                 for entry in self.ListaEntry:
                         entry.Entrada.config(state = 'readonly')

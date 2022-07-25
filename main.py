@@ -1,6 +1,7 @@
 
 from asyncio.windows_events import NULL
 from contextlib import nullcontext
+from re import A
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
@@ -257,7 +258,7 @@ class BuscarRegistro(tk.Toplevel):
                 super().__init__()
                 # configuración de la ventana 
                 self.title('Logi Vet Búsqueda de registros.')
-                self.geometry('1130x430')
+                self.geometry('1130x500')
 
                 # MARCO BUSQUEDA
                 self.CartaBusqueda = ttk.Frame(self, style='Card', padding=(5, 6, 10, 9))
@@ -266,19 +267,20 @@ class BuscarRegistro(tk.Toplevel):
                 # SELECCION DE BUSQUEDA
                 self.LabelBuscar = Label(self.CartaBusqueda, text= "Buscar por ")
                 self.LabelBuscar.grid(row= 0, column= 0)
+                
 
                 self.ComboBuscarPor = ttk.Combobox(self.CartaBusqueda, values = ["ID Mascota",'Nombre Dueño',
                                                                        'DNI dueño','Nombre Paciente',],
                                                state="readonly")
                 self.ComboBuscarPor.current(0)
                 self.ComboBuscarPor.grid(row= 0, column= 1)
-
+                
                 self.EntryBuscar = EntryCustom(self.CartaBusqueda, text='')
                 self.EntryBuscar.grid(row= 0, column= 2, padx= 10)
 
-                ListaRegistrosBuscados = []
+                self.ListaRegistrosBuscados = []
                 self.BtBuscar = Button(self.CartaBusqueda, text ='--->',
-                                        command= lambda: self.buscar_magicamente(ListaRegistrosBuscados),
+                                        command= lambda: self.buscar_magicamente(self.ListaRegistrosBuscados),
                                         borderwidth = 0)
                 self.BtBuscar.grid(row = 0, column = 3, padx= 10)
                 
@@ -287,39 +289,54 @@ class BuscarRegistro(tk.Toplevel):
                 self.card.place(x = ESPACIO_X*2, y = ESPACIO_Y+MARCO_DE_BUSQUEDA_Y)
 
                 #ENTRY
+                fila = 0
                 self.EntryNombre = EntryCustom(self.card, text='Nombre')
-                self.EntryNombre.grid(row= 1, column= 0)
+                self.EntryNombre.grid(row= fila, column= 0)
+                fila +=1
 
                 self.EntryID = EntryCustom(self.card, text='ID mascota')
-                self.EntryID.grid(row= 2, column= 0)
+                self.EntryID.grid(row= fila, column= 0)
+                fila +=1
 
                 self.EntryRaza = EntryCustom(self.card, text='Raza')
-                self.EntryRaza.grid(row= 3, column= 0)
+                self.EntryRaza.grid(row= fila, column= 0)
+                fila +=1
 
                 self.EntryEdad = EntryCustom(self.card, text='Edad')
-                self.EntryEdad.grid(row= 4, column= 0)
+                self.EntryEdad.grid(row= fila, column= 0)
+                fila +=1
+
+                self.EntryNombreDueño = EntryCustom(self.card, text='Nombre Dueño')
+                self.EntryNombreDueño.grid(row= fila, column= 0)
+                fila +=1
 
                 self.EntryDniDueño = EntryCustom(self.card, text='DNI Dueño')
-                self.EntryDniDueño.grid(row= 5, column= 0)
-
+                self.EntryDniDueño.grid(row= fila, column= 0)
+               
                 self.EntryEmailDueño = EntryCustom(self.card, text='dueño@ejemplo.com')
-                self.EntryEmailDueño.grid(row= 5, column= 1, padx= 10)
+                self.EntryEmailDueño.grid(row= fila, column= 1, padx= 10)
 
                 self.EntryTelefono = EntryCustom(self.card, text='Telefono')
-                self.EntryTelefono.grid(row= 5, column= 2)
+                self.EntryTelefono.grid(row= fila, column= 2)
+                fila +=1
+
+                self.EntryNombreDueño2 = EntryCustom(self.card, text='Nombre Dueño 2')
+                self.EntryNombreDueño2.grid(row= fila, column= 0)
+                fila +=1
 
                 self.EntryDniDueño2 = EntryCustom(self.card, text='DNI segundo Dueño')
-                self.EntryDniDueño2.grid(row= 6, column= 0)
+                self.EntryDniDueño2.grid(row= fila, column= 0)
 
                 self.EntryEmailDueño2 = EntryCustom(self.card, text='dueño2@ejemplo.com')
-                self.EntryEmailDueño2.grid(row= 6, column= 1, padx= 10)
+                self.EntryEmailDueño2.grid(row= fila, column= 1, padx= 10)
 
                 self.EntryTelefono2 = EntryCustom(self.card, text='Telefono dueño 2')
-                self.EntryTelefono2.grid(row= 6, column= 2)
+                self.EntryTelefono2.grid(row= fila, column= 2)
+                fila +=1
 
-                self.ListaEntry = [self.EntryNombre,self.EntryID,self.EntryRaza,self.EntryEdad,self.EntryDniDueño,
-                                   self.EntryEmailDueño,self.EntryTelefono,self.EntryDniDueño2,
-                                   self.EntryEmailDueño2,self.EntryTelefono2]
+                self.ListaEntry = [self.EntryNombre,self.EntryID,self.EntryRaza,self.EntryEdad,
+                                   self.EntryNombreDueño,self.EntryDniDueño,self.EntryEmailDueño,self.EntryTelefono,
+                                   self.EntryNombreDueño2,self.EntryDniDueño2, self.EntryEmailDueño2,self.EntryTelefono2]
 
 
                 self.LabelFoto = Label(self.card, text="ACA VA LA FOTO", 
@@ -338,7 +355,7 @@ class BuscarRegistro(tk.Toplevel):
                 self.treeview = ttk.Treeview(self.CartaTreeView, selectmode="extended",
                                              yscrollcommand=treeScroll.set,
                                              columns=(1,2,3),
-                                             height=13)
+                                             height=17)
                 self.treeview.pack(expand=True, fill="both")
                 treeScroll.config(command=self.treeview.yview)
 
@@ -353,21 +370,8 @@ class BuscarRegistro(tk.Toplevel):
                 self.treeview.heading(1, text="Paciente", anchor="w")
                 self.treeview.heading(2, text="Dueño", anchor="w")
                 self.treeview.heading(3, text="Dni Dueño", anchor="w")
-                
-                
-                """  TAL VEZ LO PONGO MAS ADELANTE, TAL VEZ NO JAJA
-                self.treeview.heading(4, text="Raza", anchor="w")
-                self.treeview.heading(5, text="Edad", anchor="w")
-                self.treeview.heading(6, text="Mail", anchor="w")
-                self.treeview.heading(7, text="Telefono", anchor="w")
-                self.treeview.heading(8, text="Dueño 2", anchor="w")
-                self.treeview.heading(9, text="Dni Dueño 2", anchor="w")
-                self.treeview.heading(10, text="Mail 2", anchor="w")
-                self.treeview.heading(11, text="Telefono 2", anchor="w")
 
-                self.treeview['displaycolumns'] = (1, 2, 3)
-                """
-
+                self.treeview.bind("<<TreeviewSelect>>", lambda e: self.CargarDatosEnEntry(e))
 
                 #BOTONES  MODIFICAR, HC Y ELIMINAR PACIENTE
                 self.BtMod = Button(self, text='Modificar Datos', bg='yellow',
@@ -384,6 +388,20 @@ class BuscarRegistro(tk.Toplevel):
 
                 # Configuracion estandar inicial de los campos de datos
                 self.SoloLeerEntry()
+        
+        def CargarDatosEnEntry(self,e):
+
+                self.EstadoNormalEntry()
+                selected_id = self.treeview.selection()
+                datos = self.ListaRegistrosBuscados[self.treeview.index(selected_id)]
+
+                IndiceRegistro = 0
+                for widget  in self.ListaEntry:
+                        widget.Entrada.delete(0, tk.END)
+                        widget.Entrada.insert(0, f"{datos[IndiceRegistro]}")
+                        IndiceRegistro +=1
+                self.SoloLeerEntry()
+
 
         def buscar_magicamente(self,ListaRegistrosBuscados):
 

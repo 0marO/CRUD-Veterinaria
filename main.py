@@ -1,7 +1,5 @@
 
 from asyncio.windows_events import NULL
-from contextlib import nullcontext
-from re import A
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
@@ -252,7 +250,6 @@ class IngresoMascota(tk.Toplevel):
                 else:
                         IngresarMascotaDB(nombre, tipo, raza, edad, dni_dueño, dni_dueño2)
 
-
 class BuscarRegistro(tk.Toplevel):
         def __init__(self):
                 super().__init__()
@@ -290,12 +287,12 @@ class BuscarRegistro(tk.Toplevel):
 
                 #ENTRY
                 fila = 0
-                self.EntryNombre = EntryCustom(self.card, text='Nombre')
-                self.EntryNombre.grid(row= fila, column= 0)
+                self.EntryID = EntryCustom(self.card, text='Id Mascota')
+                self.EntryID.grid(row= fila, column= 0)
                 fila +=1
 
-                self.EntryID = EntryCustom(self.card, text='ID mascota')
-                self.EntryID.grid(row= fila, column= 0)
+                self.EntryNombre = EntryCustom(self.card, text='Nombre')
+                self.EntryNombre.grid(row= fila, column= 0)
                 fila +=1
 
                 self.EntryRaza = EntryCustom(self.card, text='Raza')
@@ -306,45 +303,40 @@ class BuscarRegistro(tk.Toplevel):
                 self.EntryEdad.grid(row= fila, column= 0)
                 fila +=1
 
-                self.EntryNombreDueño = EntryCustom(self.card, text='Nombre Dueño')
-                self.EntryNombreDueño.grid(row= fila, column= 0)
-                fila +=1
-
                 self.EntryDniDueño = EntryCustom(self.card, text='DNI Dueño')
                 self.EntryDniDueño.grid(row= fila, column= 0)
-               
-                self.EntryEmailDueño = EntryCustom(self.card, text='dueño@ejemplo.com')
-                self.EntryEmailDueño.grid(row= fila, column= 1, padx= 10)
-
-                self.EntryTelefono = EntryCustom(self.card, text='Telefono')
-                self.EntryTelefono.grid(row= fila, column= 2)
                 fila +=1
+                
+                self.EntryNombreDueño = EntryCustom(self.card, text='Nombre Dueño')
+                self.EntryNombreDueño.grid(row= fila, column= 0)
 
-                self.EntryNombreDueño2 = EntryCustom(self.card, text='Nombre Dueño 2')
-                self.EntryNombreDueño2.grid(row= fila, column= 0)
+                self.EntryEmailDueño = EntryCustom(self.card, text='ejemplo@ejemplo.com')
+                self.EntryEmailDueño.grid(row= fila, column= 1, padx= 10)
+                
+                self.EntryTelefono = EntryCustom(self.card, text='Telefono Primer Dueño')
+                self.EntryTelefono.grid(row= fila, column= 2)
                 fila +=1
 
                 self.EntryDniDueño2 = EntryCustom(self.card, text='DNI segundo Dueño')
                 self.EntryDniDueño2.grid(row= fila, column= 0)
-
-                self.EntryEmailDueño2 = EntryCustom(self.card, text='dueño2@ejemplo.com')
-                self.EntryEmailDueño2.grid(row= fila, column= 1, padx= 10)
-
-                self.EntryTelefono2 = EntryCustom(self.card, text='Telefono dueño 2')
-                self.EntryTelefono2.grid(row= fila, column= 2)
                 fila +=1
 
-                self.ListaEntry = [self.EntryNombre,self.EntryID,self.EntryRaza,self.EntryEdad,
-                                   self.EntryNombreDueño,self.EntryDniDueño,self.EntryEmailDueño,self.EntryTelefono,
-                                   self.EntryNombreDueño2,self.EntryDniDueño2, self.EntryEmailDueño2,self.EntryTelefono2]
+                self.EntryNombreDueño2 = EntryCustom(self.card, text='Nombre Dueño 2')
+                self.EntryNombreDueño2.grid(row= fila, column= 0)
+
+                self.EntryEmailDueño2 = EntryCustom(self.card, text='ejemplo@ejemplo.com')
+                self.EntryEmailDueño2.grid(row= fila, column= 1, padx= 10)
+
+                self.EntryTelefono2 = EntryCustom(self.card, text='Telefono Segundo Dueño')
+                self.EntryTelefono2.grid(row= fila, column= 2)
+                fila +=1
 
 
                 self.LabelFoto = Label(self.card, text="ACA VA LA FOTO", 
                                         height= 7, width= 15, bg='green')
                 self.LabelFoto.place(x = 200, y = 20)
 
-                
-
+        
                 # MARCO TREE VIEW
                 self.CartaTreeView = ttk.Frame(self, padding=(5, 6, 10, 9))
                 self.CartaTreeView.place(x = ANCHO_MARCO_DATOS, y = ESPACIO_Y + OCD)
@@ -389,20 +381,119 @@ class BuscarRegistro(tk.Toplevel):
                 # Configuracion estandar inicial de los campos de datos
                 self.SoloLeerEntry()
         
+        def GenerarListaElementosModificables(self):
+                Lista = [self.EntryNombre,self.EntryRaza,self.EntryEdad,
+                                self.EntryDniDueño,self.EntryDniDueño2]
+                return Lista
+
+        def GenerarListaElementosActualizables(self):
+                Lista = [self.EntryNombre,self.EntryID,self.EntryRaza,self.EntryEdad,
+                                        self.EntryNombreDueño,self.EntryDniDueño, self.EntryEmailDueño, self.EntryTelefono,
+                                        self.EntryNombreDueño2,self.EntryDniDueño2, self.EntryEmailDueño2, self.EntryTelefono2]
+                return Lista
+
+        def GenerarEntryDueños(self):
+                Lista = [self.EntryNombreDueño, self.EntryEmailDueño, self.EntryTelefono,
+                         self.EntryNombreDueño2, self.EntryEmailDueño2, self.EntryTelefono2]
+                return Lista
+
+        def NoEsNuloSegundoDni(self):
+                return  (self.EntryDniDueño2.Entrada.get() != '' and self.EntryDniDueño2.Entrada.get() != 'DNI segundo Dueño' and self.EntryDniDueño2.Entrada.get() != 'None')
+
+        def ValidarEntrysModificables(self):
+                if ComprobarEntradaNombre(self.EntryNombre.Entrada.get()) == False:
+                        print('Error. El nombre ingresado es inválido.')
+                        return False
+                if ComprobarEntradaNombre(self.EntryRaza.Entrada.get()) == False:
+                        print('Error. El nombre ingresado es inválido.')
+                        return False
+                if ComprobarEntradaEdad(self.EntryEdad.Entrada.get()) == False:
+                        print('Error. Edad acepta solo numeros.')
+                        return False
+                if ComprobarEntradaDni(self.EntryDniDueño.Entrada.get()) == False:
+                        print('Error. El DNI ingresado es inválido.')
+                        return False
+                 
+                if ComprobarEntradaDni(self.EntryDniDueño2.Entrada.get()) == False and self.NoEsNuloSegundoDni():
+                        print('Error. El DNI ingresado es inválido.')
+                        return False
+
+                return True
+
+        def ActualizarDueñosMostrados(self,RegistroD1, RegistroD2):
+                
+                self.PermitirModificacionesEntry()
+                Lista = self.GenerarEntryDueños()
+                if RegistroD1:
+                        Lista[POS_DUEÑO].Entrada.delete(0, tk.END)
+                        Lista[POS_DUEÑO].Entrada.insert(0, f"{RegistroD1[POS_REGISTRO_DUEÑO]}")
+                        
+                        Lista[POS_EMAIL].Entrada.delete(0, tk.END)
+                        Lista[POS_EMAIL].Entrada.insert(0, f"{RegistroD1[POS_REGISTRO_EMAIL]}")
+
+                        Lista[POS_TEL].Entrada.delete(0, tk.END)
+                        Lista[POS_TEL].Entrada.insert(0, f"{RegistroD1[POS_REGISTRO_TEL]}")
+
+                if RegistroD2:
+                        Lista[POS_DUEÑO2].Entrada.delete(0, tk.END)
+                        Lista[POS_DUEÑO2].Entrada.insert(0, f"{RegistroD2[POS_REGISTRO_DUEÑO]}")
+                
+                        Lista[POS_EMAIL2].Entrada.delete(0, tk.END)
+                        Lista[POS_EMAIL2].Entrada.insert(0, f"{RegistroD2[POS_REGISTRO_EMAIL]}")
+
+                        Lista[POS_TEL2].Entrada.delete(0, tk.END)
+                        Lista[POS_TEL2].Entrada.insert(0, f"{RegistroD2[POS_REGISTRO_TEL]}")
+
+                self.DenegarModificacionesEntry()
+     
+
+        def ModificarMagicamente(self):
+
+                if self.ValidarEntrysModificables() == False:
+                        return
+                
+                RegistroD1= ObtenerDatosDueñoPorDni(self.EntryDniDueño.Entrada.get())
+                
+                RegistroD2= False
+                if self.NoEsNuloSegundoDni():
+                        RegistroD2= ObtenerDatosDueñoPorDni(self.EntryDniDueño2.Entrada.get())
+
+                if RegistroD1 and RegistroD2:
+                        CambiarRegistro(self.EntryNombre.Entrada.get(),
+                                                self.EntryID.Entrada.get(),
+                                                self.EntryRaza.Entrada.get(),
+                                                self.EntryEdad.Entrada.get(),
+                                                RegistroD1[POS_REGISTRO][POS_REGISTRO_ID],
+                                                RegistroD2[POS_REGISTRO][POS_REGISTRO_ID]
+                                                )
+                elif RegistroD1:
+                        CambiarRegistro(self.EntryNombre.Entrada.get(),
+                                                self.EntryID.Entrada.get(),
+                                                self.EntryRaza.Entrada.get(),
+                                                self.EntryEdad.Entrada.get(),
+                                                RegistroD1[POS_REGISTRO][POS_REGISTRO_ID]
+                                                )
+                
+                self.ActualizarDueñosMostrados(RegistroD1[POS_REGISTRO], RegistroD2[POS_REGISTRO])
+                #FALTA ACTUALIZAR DATOS DEL TREEVIEW
+                #FALTA ACTUALIZAR DATOS LA LISTA DE REGISTROS BUSCADOS.
+                
+
         def CargarDatosEnEntry(self,e):
 
-                self.EstadoNormalEntry()
+                self.PermitirModificacionesEntry()
                 selected_id = self.treeview.selection()
                 datos = self.ListaRegistrosBuscados[self.treeview.index(selected_id)]
 
+                ListaEntry = self.GenerarListaElementosActualizables()
+                
                 IndiceRegistro = 0
-                for widget  in self.ListaEntry:
+                for widget  in ListaEntry:
                         widget.Entrada.delete(0, tk.END)
                         widget.Entrada.insert(0, f"{datos[IndiceRegistro]}")
                         IndiceRegistro +=1
-                self.SoloLeerEntry()
-
-
+                self.DenegarModificacionesEntry()
+                
         def buscar_magicamente(self,ListaRegistrosBuscados):
 
                 devolucion = NULL
@@ -431,17 +522,23 @@ class BuscarRegistro(tk.Toplevel):
                 print(ListaRegistrosBuscados)
                 self.treeview.update()
 
+        def DenegarModificacionesEntry(self):
+                for entry in self.GenerarListaElementosActualizables():
+                        entry.Entrada.config(state = 'readonly')
 
+        def PermitirModificacionesEntry(self):
+                for entry in self.GenerarListaElementosActualizables():
+                        entry.Entrada.config(state = 'normal')
 
         def SoloLeerEntry(self):
-                for entry in self.ListaEntry:
+                for entry in self.GenerarListaElementosActualizables():
                         entry.Entrada.config(state = 'readonly')
                 self.BtMod.config(command= lambda: self.EstadoNormalEntry(), text='Modificar Datos')
 
         def EstadoNormalEntry(self):
-                for entry in self.ListaEntry:
+                for entry in self.GenerarListaElementosModificables():
                         entry.Entrada.config(state = 'normal')
-                self.BtMod.config(command= lambda: self.SoloLeerEntry(), text='Terminar Mods')
+                self.BtMod.config(command= lambda: [self.ModificarMagicamente(), self.SoloLeerEntry()], text='Terminar Mods')
 
 
 class EntryCustom(ttk.Frame):

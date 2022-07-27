@@ -1,6 +1,8 @@
 from unittest import result
 import mysql.connector
 
+from constantes import *
+
 def ConectarConDb():
 
         mydb = mysql.connector.connect(
@@ -162,7 +164,7 @@ def BuscarRegistroPorDniDueño(DniDueño):
                                                 ON p.id_duenio = d.id_duenio
                                         LEFT JOIN duenio AS d2
                                                 ON p.id_duenio2 = d2.id_duenio
-                                WHERE d.DNI = {DniDueño};""")
+                                WHERE d.DNI = {DniDueño} OR d2.DNI = {DniDueño};""")
 
         myresult = cursor.fetchall()
         for x in myresult:
@@ -221,3 +223,49 @@ def BuscarRegistroPorNombrePaciente(NombrePaciente):
         mydb.close()
 
         return resultado
+
+def ObtenerDatosDueñoPorDni( DniDueño):
+        mydb = ConectarConDb()
+        mycursor = mydb.cursor()
+
+
+        mycursor.execute(f"""   SELECT d.Nombre, d.id_duenio, d.DNI, d.Email, d.Telefono 
+                                FROM duenio AS d
+                                WHERE   d.DNI = {DniDueño}
+                                LIMIT 1""")
+        
+        myresult = mycursor.fetchall()
+
+        for x in myresult:
+                print(x)
+
+        mydb.close()
+        return myresult if len(myresult) >0 else False
+
+
+def CambiarRegistro(NombreMasc, IdMasc, Raza, Edad, Iddueño1, Iddueño2 = -1):
+
+        mydb = ConectarConDb()
+        mycursor = mydb.cursor()
+
+        if Iddueño2 != -1:
+                mycursor.execute(f"""   UPDATE paciente AS p
+                                        SET     p.Nombre = '{NombreMasc}', 
+                                                p.Raza = '{Raza}', 
+                                                p.Edad = {Edad},
+                                                p.id_duenio = {Iddueño1},
+                                                p.id_duenio2 = {Iddueño2}
+                                        WHERE p.id_mascota = {IdMasc}""")
+        else:
+                mycursor.execute(f"""   UPDATE paciente AS p
+                                        SET     p.Nombre = '{NombreMasc}', 
+                                                p.Raza = '{Raza}', 
+                                                p.Edad = {Edad},
+                                                p.id_duenio = {Iddueño1}
+                                        WHERE p.id_mascota = {IdMasc}""")
+
+        mydb.commit()
+
+        mydb.close()
+
+        

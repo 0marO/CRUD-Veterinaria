@@ -426,23 +426,23 @@ class BuscarRegistro(tk.Toplevel):
                 Lista = self.GenerarEntryDueños()
                 if RegistroD1:
                         Lista[POS_DUEÑO].Entrada.delete(0, tk.END)
-                        Lista[POS_DUEÑO].Entrada.insert(0, f"{RegistroD1[POS_REGISTRO_DUEÑO]}")
+                        Lista[POS_DUEÑO].Entrada.insert(0, f"{RegistroD1[POS_REGISTRO][POS_REGISTRO_DUEÑO]}")
                         
                         Lista[POS_EMAIL].Entrada.delete(0, tk.END)
-                        Lista[POS_EMAIL].Entrada.insert(0, f"{RegistroD1[POS_REGISTRO_EMAIL]}")
+                        Lista[POS_EMAIL].Entrada.insert(0, f"{RegistroD1[POS_REGISTRO][POS_REGISTRO_EMAIL]}")
 
                         Lista[POS_TEL].Entrada.delete(0, tk.END)
-                        Lista[POS_TEL].Entrada.insert(0, f"{RegistroD1[POS_REGISTRO_TEL]}")
+                        Lista[POS_TEL].Entrada.insert(0, f"{RegistroD1[POS_REGISTRO][POS_REGISTRO_TEL]}")
 
                 if RegistroD2:
                         Lista[POS_DUEÑO2].Entrada.delete(0, tk.END)
-                        Lista[POS_DUEÑO2].Entrada.insert(0, f"{RegistroD2[POS_REGISTRO_DUEÑO]}")
+                        Lista[POS_DUEÑO2].Entrada.insert(0, f"{RegistroD2[POS_REGISTRO][POS_REGISTRO_DUEÑO]}")
                 
                         Lista[POS_EMAIL2].Entrada.delete(0, tk.END)
-                        Lista[POS_EMAIL2].Entrada.insert(0, f"{RegistroD2[POS_REGISTRO_EMAIL]}")
+                        Lista[POS_EMAIL2].Entrada.insert(0, f"{RegistroD2[POS_REGISTRO][POS_REGISTRO_EMAIL]}")
 
                         Lista[POS_TEL2].Entrada.delete(0, tk.END)
-                        Lista[POS_TEL2].Entrada.insert(0, f"{RegistroD2[POS_REGISTRO_TEL]}")
+                        Lista[POS_TEL2].Entrada.insert(0, f"{RegistroD2[POS_REGISTRO][POS_REGISTRO_TEL]}")
 
                 self.DenegarModificacionesEntry()
      
@@ -474,7 +474,7 @@ class BuscarRegistro(tk.Toplevel):
                                                 RegistroD1[POS_REGISTRO][POS_REGISTRO_ID]
                                                 )
                 
-                self.ActualizarDueñosMostrados(RegistroD1[POS_REGISTRO], RegistroD2[POS_REGISTRO])
+                self.ActualizarDueñosMostrados(RegistroD1, RegistroD2)
                 #FALTA ACTUALIZAR DATOS DEL TREEVIEW
                 #FALTA ACTUALIZAR DATOS LA LISTA DE REGISTROS BUSCADOS.
                 

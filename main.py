@@ -276,6 +276,7 @@ class BuscarRegistro(tk.Toplevel):
                 self.EntryBuscar.grid(row= 0, column= 2, padx= 10)
 
                 self.ListaRegistrosBuscados = []
+                self.selected_id = None
                 self.BtBuscar = Button(self.CartaBusqueda, text ='--->',
                                         command= lambda: self.buscar_magicamente(self.ListaRegistrosBuscados),
                                         borderwidth = 0)
@@ -367,20 +368,25 @@ class BuscarRegistro(tk.Toplevel):
 
                 #BOTONES  MODIFICAR, HC Y ELIMINAR PACIENTE
                 self.BtMod = Button(self, text='Modificar Datos', bg='yellow',
-                                    command= lambda: self.EstadoNormalEntry())
+                                    command= lambda: [self.EstadoNormalEntry(),self.BloquearBusqueda()])
 
-                self.BtMod.place(x= ESPACIO_X*2, y= MARCO_DE_DATOS_Y)
+                self.BtMod.place(x= ESPACIO_X*2+BOTON_MOD_X*8, y= MARCO_DE_DATOS_Y)
 
                 self.BtHc = Button(self, text='Historia Clínica', bg='dark turquoise')
-                self.BtHc.place(x= ESPACIO_X*2+BOTON_MOD_X, y= MARCO_DE_DATOS_Y)
+                self.BtHc.place(x= ESPACIO_X*2, y= MARCO_DE_DATOS_Y)
 
                 self.BtEl = Button(self, text='Eliminar Paciente', bg='tomato')
-                self.BtEl.place(x= ESPACIO_X*2+BOTON_MOD_X*4, y= MARCO_DE_DATOS_Y)
+                self.BtEl.place(x= ESPACIO_X*2+BOTON_MOD_X*9, y= MARCO_DE_DATOS_Y)
 
 
                 # Configuracion estandar inicial de los campos de datos
                 self.SoloLeerEntry()
         
+        def BloquearBusqueda(self):
+                self.BtBuscar.config(state= DISABLED)
+        def PermitirBusqueda(self):
+                self.BtBuscar.config(state= NORMAL)
+
         def GenerarListaElementosModificables(self):
                 Lista = [self.EntryNombre,self.EntryRaza,self.EntryEdad,
                                 self.EntryDniDueño,self.EntryDniDueño2]
@@ -476,15 +482,25 @@ class BuscarRegistro(tk.Toplevel):
                 
                 self.ActualizarDueñosMostrados(RegistroD1, RegistroD2)
                 #FALTA ACTUALIZAR DATOS DEL TREEVIEW
-                #FALTA ACTUALIZAR DATOS LA LISTA DE REGISTROS BUSCADOS.
+                self.ActualizarListaRegistrosBuscados(RegistroD1)
                 
+        def ActualizarListaRegistrosBuscados(self,RegistroD1):
+
+                if RegistroD1:
+                        i = 0
+                        for widget in self.GenerarListaElementosActualizables():
+                                self.ListaRegistrosBuscados[self.selected_id][i] = widget.Entrada.get()
+                                i+=1
+        
 
         def CargarDatosEnEntry(self,e):
 
                 self.PermitirModificacionesEntry()
-                selected_id = self.treeview.selection()
-                datos = self.ListaRegistrosBuscados[self.treeview.index(selected_id)]
+                self.selected_id = self.treeview.index(self.treeview.selection())
+                datos = self.ListaRegistrosBuscados[self.selected_id]
 
+                print(f"{bcolors.OKGREEN}{datos} {bcolors.ENDC}")
+                
                 ListaEntry = self.GenerarListaElementosActualizables()
                 
                 IndiceRegistro = 0
@@ -517,7 +533,7 @@ class BuscarRegistro(tk.Toplevel):
                                                 values=(f"{reg[POS_NOMBRE_MASCOTA]}",
                                                         f"{reg[POS_NOMBRE_DUEÑO]}", f"{reg[POS_DNI_DUEÑO]}")
                                                 )
-                        ListaRegistrosBuscados.append(reg)
+                        ListaRegistrosBuscados.append(list(reg))
 
                 print(ListaRegistrosBuscados)
                 self.treeview.update()
@@ -533,12 +549,17 @@ class BuscarRegistro(tk.Toplevel):
         def SoloLeerEntry(self):
                 for entry in self.GenerarListaElementosActualizables():
                         entry.Entrada.config(state = 'readonly')
-                self.BtMod.config(command= lambda: self.EstadoNormalEntry(), text='Modificar Datos')
+                self.BtMod.config(command= lambda: [self.EstadoNormalEntry(),
+                                                    self.BloquearBusqueda()],
+                                  text='Modificar Datos')
 
         def EstadoNormalEntry(self):
                 for entry in self.GenerarListaElementosModificables():
                         entry.Entrada.config(state = 'normal')
-                self.BtMod.config(command= lambda: [self.ModificarMagicamente(), self.SoloLeerEntry()], text='Terminar Mods')
+                self.BtMod.config(command= lambda: [self.ModificarMagicamente(),
+                                                    self.SoloLeerEntry(), 
+                                                    self.PermitirBusqueda()],
+                                  text='Terminar Mods')
 
 
 class EntryCustom(ttk.Frame):
@@ -563,6 +584,17 @@ class EntryCustom(ttk.Frame):
                 if self.VarTexto.get() == '':
                         self.VarTexto.set(text)
 
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 
 if __name__ == "__main__":
         app = App()

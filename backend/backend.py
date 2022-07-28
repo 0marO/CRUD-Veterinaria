@@ -145,10 +145,6 @@ def BuscarRegistroPorIdMascota(IdMascota):
 
         myresult = mycursor.fetchall()
         mydb.close()
-
-        for x in myresult:
-                print(x)
-
         return myresult
 
 def BuscarRegistroPorDniDueño(DniDueño):
@@ -167,9 +163,6 @@ def BuscarRegistroPorDniDueño(DniDueño):
                                 WHERE d.DNI = {DniDueño} OR d2.DNI = {DniDueño};""")
 
         myresult = cursor.fetchall()
-        for x in myresult:
-                print(x)
-
         mydb.close()
         return myresult
 
@@ -189,13 +182,7 @@ def BuscarRegistroPorNombreDueño(NombreDueño):
                                 WHERE d.Nombre LIKE '%{NombreDueño}%' OR d2.Nombre LIKE '%{NombreDueño}%' """)
 
         resultado =  cursor.fetchall()
-
-        for x in resultado:
-                print(x)
-
-
         mydb.close()
-
         return resultado
 
 def BuscarRegistroPorNombrePaciente(NombrePaciente):
@@ -214,14 +201,7 @@ def BuscarRegistroPorNombrePaciente(NombrePaciente):
                                 WHERE p.Nombre LIKE '%{NombrePaciente}%'  """)
 
         resultado =  cursor.fetchall()
-
-        for x in resultado:
-                print(x)
-
-
-
         mydb.close()
-
         return resultado
 
 def ObtenerDatosDueñoPorDni( DniDueño):
@@ -235,13 +215,8 @@ def ObtenerDatosDueñoPorDni( DniDueño):
                                 LIMIT 1""")
         
         myresult = mycursor.fetchall()
-
-        for x in myresult:
-                print(x)
-
         mydb.close()
         return myresult if len(myresult) >0 else False
-
 
 def CambiarRegistro(NombreMasc, IdMasc, Raza, Edad, Iddueño1, Iddueño2 = -1):
 
@@ -261,7 +236,8 @@ def CambiarRegistro(NombreMasc, IdMasc, Raza, Edad, Iddueño1, Iddueño2 = -1):
                                         SET     p.Nombre = '{NombreMasc}', 
                                                 p.Raza = '{Raza}', 
                                                 p.Edad = {Edad},
-                                                p.id_duenio = {Iddueño1}
+                                                p.id_duenio = {Iddueño1},
+                                                p.id_duenio2 = NULL
                                         WHERE p.id_mascota = {IdMasc}""")
 
         mydb.commit()

@@ -479,11 +479,19 @@ class BuscarRegistro(tk.Toplevel):
                                                 self.EntryEdad.Entrada.get(),
                                                 RegistroD1[POS_REGISTRO][POS_REGISTRO_ID]
                                                 )
+                        self.ResetearDatosSegundoDueño()
                 
                 self.ActualizarDueñosMostrados(RegistroD1, RegistroD2)
                 #FALTA ACTUALIZAR DATOS DEL TREEVIEW
                 self.ActualizarListaRegistrosBuscados(RegistroD1)
                 
+        def ResetearDatosSegundoDueño(self):
+
+                self.PermitirModificacionesEntry()
+                self.EntryNombreDueño2.Entrada.delete(0, tk.END)
+                self.EntryEmailDueño2.Entrada.delete(0, tk.END) 
+                self.EntryTelefono2.Entrada.delete(0, tk.END)
+
         def ActualizarListaRegistrosBuscados(self,RegistroD1):
 
                 if RegistroD1:
@@ -526,16 +534,15 @@ class BuscarRegistro(tk.Toplevel):
                 for i in self.treeview.get_children():
                         self.treeview.delete(i)
 
-                for reg in devolucion:
+                for registro in devolucion:
                         self.treeview.insert(   "",
                                                 tk.END,
-                                                text= f"{reg[POS_ID_MASCOTA]}",
-                                                values=(f"{reg[POS_NOMBRE_MASCOTA]}",
-                                                        f"{reg[POS_NOMBRE_DUEÑO]}", f"{reg[POS_DNI_DUEÑO]}")
+                                                text= f"{registro[POS_ID_MASCOTA]}",
+                                                values=(f"{registro[POS_NOMBRE_MASCOTA]}",
+                                                        f"{registro[POS_NOMBRE_DUEÑO]}", f"{registro[POS_DNI_DUEÑO]}")
                                                 )
-                        ListaRegistrosBuscados.append(list(reg))
+                        ListaRegistrosBuscados.append(list(registro))
 
-                print(ListaRegistrosBuscados)
                 self.treeview.update()
 
         def DenegarModificacionesEntry(self):

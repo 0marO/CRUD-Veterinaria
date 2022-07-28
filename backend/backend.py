@@ -1,3 +1,5 @@
+from operator import truediv
+import turtle
 from unittest import result
 import mysql.connector
 
@@ -14,7 +16,6 @@ def ConectarConDb():
         )
 
         return mydb
-
 
 def IngresarDueñoDB(nombre, apellido, email, dni, direccion, telefono):
 
@@ -60,7 +61,6 @@ def IngresarDueñoDB(nombre, apellido, email, dni, direccion, telefono):
         # ----------------------------
 
         mydb.close()
-
 
 def IngresarMascotaDB(nombre, tipo, raza, edad, dni_dueño, dni_dueño2 = ''):
 
@@ -126,7 +126,6 @@ def IngresarMascotaDB(nombre, tipo, raza, edad, dni_dueño, dni_dueño2 = ''):
         # ----------------------------
 
         mydb.close()
-
 
 def BuscarRegistroPorIdMascota(IdMascota):
 
@@ -244,4 +243,22 @@ def CambiarRegistro(NombreMasc, IdMasc, Raza, Edad, Iddueño1, Iddueño2 = -1):
 
         mydb.close()
 
+
+def ComprobarYEliminarPaciente(id_paciente):
         
+        if BuscarRegistroPorIdMascota(id_paciente):
+                return EliminarPacienteDB(id_paciente)
+        return False
+
+def EliminarPacienteDB(id_paciente):
+
+        if id_paciente == None:
+                return False
+
+        mydb = ConectarConDb()
+        mycursor = mydb.cursor()
+
+        mycursor.execute(f"""DELETE FROM paciente WHERE id_mascota = {id_paciente}""")
+        mydb.commit()
+        mydb.close()
+        return True

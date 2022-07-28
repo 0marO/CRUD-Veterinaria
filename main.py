@@ -3,6 +3,7 @@ from asyncio.windows_events import NULL
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 
 from constantes import *
 from backend.backend import *
@@ -375,13 +376,23 @@ class BuscarRegistro(tk.Toplevel):
                 self.BtHc = Button(self, text='Historia Clínica', bg='dark turquoise')
                 self.BtHc.place(x= ESPACIO_X*2, y= MARCO_DE_DATOS_Y)
 
-                self.BtEl = Button(self, text='Eliminar Paciente', bg='tomato')
+                self.BtEl = Button(self, text='Eliminar Paciente', bg='tomato', command= lambda: self.EliminarPaciente())
                 self.BtEl.place(x= ESPACIO_X*2+BOTON_MOD_X*9, y= MARCO_DE_DATOS_Y)
 
 
                 # Configuracion estandar inicial de los campos de datos
                 self.SoloLeerEntry()
-        
+
+        def EliminarPaciente(self):
+
+                if messagebox.askokcancel(message="¿Seguro que quiere eliminar el paciente?", title="Eliminar paciente"):
+                        if ComprobarYEliminarPaciente(self.ListaRegistrosBuscados[self.selected_id][POS_REGISTRO_ID]):
+                                print("ELIMINADO CORRECTAMENTE")
+                                del(self.ListaRegistrosBuscados[self.selected_id])
+                                self.EliminarSeleccionadoTreeView()
+                else: 
+                        print("NO ELIMINADO")
+
         def BloquearBusqueda(self):
                 self.BtBuscar.config(state= DISABLED)
         def PermitirBusqueda(self):
@@ -492,6 +503,8 @@ class BuscarRegistro(tk.Toplevel):
                 self.EntryEmailDueño2.Entrada.delete(0, tk.END) 
                 self.EntryTelefono2.Entrada.delete(0, tk.END)
 
+        
+
         def ActualizarListaRegistrosBuscados(self,RegistroD1):
 
                 if RegistroD1:
@@ -500,14 +513,16 @@ class BuscarRegistro(tk.Toplevel):
                                 self.ListaRegistrosBuscados[self.selected_id][i] = widget.Entrada.get()
                                 i+=1
         
+        def EliminarSeleccionadoTreeView(self):
+                # Get selected item to Delete
+                selected_item = self.treeview.selection()[0]
+                self.treeview.delete(selected_item)
 
         def CargarDatosEnEntry(self,e):
 
                 self.PermitirModificacionesEntry()
                 self.selected_id = self.treeview.index(self.treeview.selection())
                 datos = self.ListaRegistrosBuscados[self.selected_id]
-
-                print(f"{bcolors.OKGREEN}{datos} {bcolors.ENDC}")
                 
                 ListaEntry = self.GenerarListaElementosActualizables()
                 
